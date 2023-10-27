@@ -17,4 +17,5 @@ use Illuminate\Support\Facades\Route;
 //     return view('welcome');
 // });
 
-Route::view('/', 'dashboard')->name('dashboard');
+Route::view('/{any?}', 'dashboard')
+    ->where('any', '.*');
