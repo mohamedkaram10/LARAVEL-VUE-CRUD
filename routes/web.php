@@ -16,10 +16,20 @@ use Illuminate\Support\Facades\Route;
 // Route::get('/', function () {
 //     return view('welcome');
 // });
-
 Route::post('login', [\App\Http\Controllers\Auth\AuthenticatedSessionController::class, 'store']);
-
 Route::post('logout', [\App\Http\Controllers\Auth\AuthenticatedSessionController::class, 'destroy']);
+
+Route::get('test', function () {
+    dump(\Illuminate\Support\Facades\Gate::abilities());
+    dump(auth()->id());
+    foreach (App\Models\Permission::pluck('name') as $permission) {
+        dump(
+            $permission . ': ' . (bool) auth()->user()->roles()->whereHas('permissions', function($q) use ($permission) {
+                $q->where('name', $permission);
+            })->exists()
+        );
+    }
+});
 
 Route::view('/{any?}', 'dashboard')
     ->where('any', '.*');
